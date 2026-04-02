@@ -58,3 +58,11 @@ The application UI will be available at `http://localhost:5173`.
 ## Development Notes
 *   **Authentication:** Currently, a dummy user (`00000000-0000-0000-0000-000000000000`) is injected on backend startup to bypass full authentication flow while developing core features. All lists and items created via the UI are temporarily attached to this user.
 *   **WebSockets:** The real-time functionality works by having the frontend emit a `joinList` event with the List ID when `ListDetailsView.vue` is mounted. The backend `EventsGateway` places that socket in a room for that specific list. Whenever an item is created, updated, or deleted via the REST API, the backend emits `itemCreated`, `itemUpdated`, or `itemDeleted` events to that specific room, triggering reactivity in the Vue frontend.
+
+## TODO
+1. Make website mobile friendly
+2. Introduce authentication
+3. Add user roles
+4. Add admin page to manage users
+5. Remove ability to register on app
+6. Improve Design
