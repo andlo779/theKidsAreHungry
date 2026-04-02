@@ -1,0 +1,51 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node modules
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Nest.js specific
+backend/dist/
+backend/node_modules/
+backend/coverage/
+backend/test-results/
+
+# Vue.js / Vite specific
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.eslintcache
+
+# Prisma
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# Other
+coverage
+.nyc_output

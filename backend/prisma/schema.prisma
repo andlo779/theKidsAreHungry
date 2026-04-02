@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(uuid())
+  name          String
+  email         String          @unique
+  password_hash String
+  createdLists  ShoppingList[]  @relation("CreatedLists")
+  memberships   ListMember[]
+  items         ShoppingItem[]
+}
+
+model ShoppingList {
+  id            String          @id @default(uuid())
+  name          String
+  created_at    DateTime        @default(now())
+  created_by_id String
+  createdBy     User            @relation("CreatedLists", fields: [created_by_id], references: [id])
+  members       ListMember[]
+  items         ShoppingItem[]
+}
+
+model ListMember {
+  list_id       String
+  user_id       String
+  list          ShoppingList    @relation(fields: [list_id], references: [id])
+  user          User            @relation(fields: [user_id], references: [id])
+
+  @@id([list_id, user_id])
+}
+
+model Store {
+  id            String          @id @default(uuid())
+  name          String
+  items         ShoppingItem[]
+}
+
+model ShoppingItem {
+  id            String          @id @default(uuid())
+  list_id       String
+  name          String
+  is_purchased  Boolean         @default(false)
+  created_at    DateTime        @default(now())
+  created_by_id String
+  store_id      String?
+
+  list          ShoppingList    @relation(fields: [list_id], references: [id])
+  createdBy     User            @relation(fields: [created_by_id], references: [id])
+  store         Store?          @relation(fields: [store_id], references: [id])
+}
