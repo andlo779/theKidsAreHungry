@@ -4,7 +4,8 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/DashboardView.vue')
+    component: () => import('../views/DashboardView.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/login',
@@ -14,7 +15,8 @@ const routes = [
   {
     path: '/lists/:id',
     name: 'ListDetails',
-    component: () => import('../views/ListDetailsView.vue')
+    component: () => import('../views/ListDetailsView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
@@ -22,3 +24,14 @@ export const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+router.beforeEach((to, _from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token');
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/login');
+  } else if (to.name === 'Login' && isAuthenticated) {
+    next('/');
+  } else {
+    next();
+  }
+});

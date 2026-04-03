@@ -10,19 +10,19 @@ export class ListsService {
     return this.prisma.shoppingList.create({ data });
   }
 
-  findAll() {
-    return this.prisma.shoppingList.findMany({ include: { items: true, members: true } });
+  findAll(family_id: string) {
+    return this.prisma.shoppingList.findMany({ where: { family_id }, include: { items: true, members: true } });
   }
 
-  findOne(id: string) {
-    return this.prisma.shoppingList.findUnique({ where: { id }, include: { items: true, members: true } });
+  findOne(id: string, family_id: string) {
+    return this.prisma.shoppingList.findUnique({ where: { id, family_id }, include: { items: true, members: true } });
   }
 
-  update(id: string, data: Prisma.ShoppingListUpdateInput) {
-    return this.prisma.shoppingList.update({ where: { id }, data });
+  update(id: string, family_id: string, data: Prisma.ShoppingListUpdateInput) {
+    return this.prisma.shoppingList.update({ where: { id, family_id }, data });
   }
 
-  remove(id: string) {
-    return this.prisma.shoppingList.delete({ where: { id } });
+  remove(id: string, family_id: string) {
+    return this.prisma.shoppingList.delete({ where: { id, family_id } });
   }
 }

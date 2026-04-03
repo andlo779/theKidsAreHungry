@@ -10,11 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Family {
+  id            String          @id @default(uuid())
+  name          String          @unique
+  users         User[]
+  shoppingLists ShoppingList[]
+}
+
 model User {
   id            String          @id @default(uuid())
   name          String
   email         String          @unique
   password_hash String
+  family_id     String?
+  family        Family?         @relation(fields: [family_id], references: [id])
   createdLists  ShoppingList[]  @relation("CreatedLists")
   memberships   ListMember[]
   items         ShoppingItem[]
@@ -25,6 +34,8 @@ model ShoppingList {
   name          String
   created_at    DateTime        @default(now())
   created_by_id String
+  family_id     String?
+  family        Family?         @relation(fields: [family_id], references: [id])
   createdBy     User            @relation("CreatedLists", fields: [created_by_id], references: [id])
   members       ListMember[]
   items         ShoppingItem[]

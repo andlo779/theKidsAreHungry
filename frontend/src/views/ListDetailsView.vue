@@ -28,8 +28,7 @@ const addItem = async () => {
   try {
     await axios.post('http://localhost:3000/items', {
       list_id: listId,
-      name: newItemName.value,
-      created_by_id: '00000000-0000-0000-0000-000000000000'
+      name: newItemName.value
     });
     newItemName.value = '';
     // Let socket handle the addition
@@ -52,7 +51,9 @@ const toggleItem = async (item: any) => {
 onMounted(() => {
   fetchListDetails();
 
-  socket = io('http://localhost:3000');
+  socket = io('http://localhost:3000', {
+    auth: { token: localStorage.getItem('token') }
+  });
   
   socket.on('connect', () => {
     socket?.emit('joinList', listId);
