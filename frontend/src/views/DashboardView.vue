@@ -31,11 +31,6 @@ const createList = async () => {
   }
 };
 
-const logout = () => {
-  authStore.logout();
-  router.push('/login');
-};
-
 onMounted(() => {
   authStore.loadUser();
   fetchLists();
@@ -44,17 +39,14 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">The Kids Are Hungry...</h1>
+    </div>
     <div class="flex justify-between items-center">
       <div>
         <h2 class="text-2xl font-bold">Your Shopping Lists</h2>
         <p class="text-gray-600">Select a list or create a new one.</p>
-        <p v-if="authStore.user" class="text-sm text-indigo-600 mt-1">
-          Logged in as {{ authStore.user.name }}
-        </p>
       </div>
-      <button @click="logout" class="bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 text-sm">
-        Logout
-      </button>
     </div>
     
     <div class="bg-white p-4 rounded-lg shadow border border-gray-200 mb-6">
