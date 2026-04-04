@@ -70,11 +70,14 @@ The application UI will be available at `http://localhost:5173`.
 
 ## TODO
 
-1. Make website mobile friendly
-2. Introduce authentication
-3. Add user roles
-4. Add admin page to manage users
-5. Remove ability to register on app
-6. Improve Design
-7. Introduce User session with expiring tokens
-
+* Make website mobile friendly
+* Add user roles
+* Add admin page to manage users
+* Remove ability to register on app
+* Improve Design
+  * Move logout button and user name to nav-bar
+  * Find a theme - better colors
+  * Add fav icon
+* Make page mobile friendly
+* Introduce User session with expiring tokens
+* Should not allow the same item twice
