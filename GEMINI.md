@@ -70,15 +70,14 @@ The application UI will be available at `http://localhost:5173`.
 
 ## TODO
 
-- Make website mobile friendly
 - Add user roles
 - Add admin page to manage users
 - Remove ability to register on app
 - Improve Design
-  - Move logout button and user name to nav-bar
   - Find a theme - better colors
   - Add fav icon
-- Make page mobile friendly
 - Introduce refresh token with logic so that we can have short living tokens but still have a great user experience
 - Should not allow the same item twice
 - Add return types everywhere
+- Add a settings page where users can update user data, change password, and add/remove users from family
+- Users should be able to delete shopping lists
