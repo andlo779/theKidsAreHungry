@@ -4,6 +4,7 @@ import { router } from './router'
 import './style.css'
 import App from './App.vue'
 import axios from 'axios'
+import { useAuthStore } from './stores/auth'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -17,6 +18,18 @@ axios.interceptors.request.use((config) => {
   }
   return config;
 });
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const authStore = useAuthStore();
+      authStore.logout();
+      router.push('/login?expired=true');
+    }
+    return Promise.reject(error);
+  }
+);
 
 app.use(router)
 

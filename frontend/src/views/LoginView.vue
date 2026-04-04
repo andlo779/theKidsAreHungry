@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
 const isLogin = ref(true);
@@ -12,6 +12,9 @@ const errorMsg = ref('');
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
+
+const sessionExpired = ref(route.query.expired === 'true');
 
 const handleSubmit = async () => {
   errorMsg.value = '';
@@ -35,6 +38,11 @@ const handleSubmit = async () => {
 
 <template>
   <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md border border-gray-200 mt-10">
+    <div v-if="sessionExpired" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded shadow-sm">
+      <p class="font-bold">Session Expired</p>
+      <p>Your session has expired. Please log in again to continue.</p>
+    </div>
+
     <div class="flex justify-center mb-6">
       <button 
         @click="isLogin = true" 
