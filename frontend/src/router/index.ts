@@ -8,6 +8,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/archived',
+    name: 'ArchivedLists',
+    component: () => import('../views/ArchivedListsView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/LoginView.vue')

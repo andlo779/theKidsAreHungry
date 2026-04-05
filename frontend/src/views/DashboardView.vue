@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
@@ -8,6 +8,7 @@ const lists = ref<any[]>([]);
 const newListName = ref('');
 const router = useRouter();
 const authStore = useAuthStore();
+const activeMenu = ref<string | null>(null);
 
 const fetchLists = async () => {
   try {
@@ -31,9 +32,34 @@ const createList = async () => {
   }
 };
 
+const toggleMenu = (id: string) => {
+  activeMenu.value = activeMenu.value === id ? null : id;
+};
+
+const archiveList = async (id: string) => {
+  if (confirm('Are you sure you want to archive this list?')) {
+    try {
+      await axios.delete(`http://localhost:3000/lists/${id}`);
+      lists.value = lists.value.filter(list => list.id !== id);
+    } catch (error) {
+      console.error('Error archiving list:', error);
+    }
+  }
+  activeMenu.value = null;
+};
+
+const closeMenu = () => {
+  activeMenu.value = null;
+};
+
 onMounted(() => {
   authStore.loadUser();
   fetchLists();
+  document.addEventListener('click', closeMenu);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeMenu);
 });
 </script>
 
@@ -72,12 +98,28 @@ onMounted(() => {
         v-for="list in lists" 
         :key="list.id" 
         @click="router.push(`/lists/${list.id}`)"
-        class="bg-white p-4 rounded-lg shadow border border-gray-200 cursor-pointer hover:border-indigo-500 transition-colors"
+        class="bg-white p-4 rounded-lg shadow border border-gray-200 cursor-pointer hover:border-indigo-500 transition-colors relative"
       >
-        <h3 class="font-bold text-lg text-indigo-700">{{ list.name }}</h3>
-        <p class="text-sm text-gray-500 mt-1">
-          {{ list.items?.length || 0 }} items
-        </p>
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-bold text-lg text-indigo-700">{{ list.name }}</h3>
+            <p class="text-sm text-gray-500 mt-1">
+              {{ list.items?.length || 0 }} items
+            </p>
+          </div>
+          <div class="relative" @click.stop>
+            <button @click="toggleMenu(list.id)" class="text-gray-400 hover:text-gray-600 focus:outline-none p-1">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+              </svg>
+            </button>
+            <div v-if="activeMenu === list.id" class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+              <button @click="archiveList(list.id)" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-md">
+                Archive
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

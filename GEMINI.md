@@ -80,4 +80,4 @@ The application UI will be available at `http://localhost:5173`.
 - Should not allow the same item twice
 - Add return types everywhere
 - Add a settings page where users can update user data, change password, and add/remove users from family
-- Users should be able to delete shopping lists
+- Users should be able to delete shopping lists (Done)

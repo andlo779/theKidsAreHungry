@@ -20,14 +20,29 @@ export class ListsController {
     return this.listsService.findAll(req.user.family_id);
   }
 
+  @Get('archived')
+  findArchived(@Request() req: any) {
+    return this.listsService.findArchived(req.user.family_id);
+  }
+
   @Get(':id')
   findOne(@Request() req: any, @Param('id') id: string) {
     return this.listsService.findOne(id, req.user.family_id);
   }
 
+  @Patch(':id/unarchive')
+  unarchive(@Request() req: any, @Param('id') id: string) {
+    return this.listsService.unarchive(id, req.user.family_id);
+  }
+
   @Patch(':id')
   update(@Request() req: any, @Param('id') id: string, @Body() updateListDto: Prisma.ShoppingListUpdateInput) {
     return this.listsService.update(id, req.user.family_id, updateListDto);
+  }
+
+  @Delete(':id/permanent')
+  removePermanent(@Request() req: any, @Param('id') id: string) {
+    return this.listsService.removePermanent(id, req.user.family_id);
   }
 
   @Delete(':id')

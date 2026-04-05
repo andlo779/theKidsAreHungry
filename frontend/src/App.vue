@@ -18,6 +18,11 @@ const goToDashboard = () => {
   router.push('/');
 };
 
+const goToArchived = () => {
+  menuOpen.value = false;
+  router.push('/archived');
+};
+
 // Close menu when clicking outside
 const closeMenu = (e: Event) => {
   const target = e.target as HTMLElement;
@@ -58,8 +63,12 @@ onUnmounted(() => {
                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Dashboard
               </button>
+              <button @click="goToArchived"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Archived Lists
+              </button>
               <button @click="logout"
-                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 border-t border-gray-100">
                 Logout
               </button>
             </div>
