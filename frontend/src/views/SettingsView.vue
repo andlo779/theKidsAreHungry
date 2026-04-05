@@ -57,6 +57,11 @@ const updatePassword = async () => {
     isSubmitting.value = false;
   }
 };
+
+const selectAll = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  target.select();
+};
 </script>
 
 <template>
@@ -91,6 +96,8 @@ const updatePassword = async () => {
             v-model="oldPassword"
             type="password"
             required
+            @focus="selectAll"
+            @click="selectAll"
             class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
@@ -103,6 +110,8 @@ const updatePassword = async () => {
             v-model="newPassword"
             type="password"
             required
+            @focus="selectAll"
+            @click="selectAll"
             class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
@@ -115,6 +124,8 @@ const updatePassword = async () => {
             v-model="confirmPassword"
             type="password"
             required
+            @focus="selectAll"
+            @click="selectAll"
             class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>

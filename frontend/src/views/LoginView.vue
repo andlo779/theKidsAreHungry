@@ -34,6 +34,11 @@ const handleSubmit = async () => {
     errorMsg.value = err.response?.data?.message || "An error occurred";
   }
 };
+
+const selectAll = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  target.select();
+};
 </script>
 
 <template>
@@ -120,6 +125,8 @@ const handleSubmit = async () => {
           v-model="password"
           type="password"
           required
+          @focus="selectAll"
+          @click="selectAll"
           class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
         />
       </div>

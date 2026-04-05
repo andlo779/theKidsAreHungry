@@ -81,3 +81,4 @@ The application UI will be available at `http://localhost:5173`.
 - Add return types everywhere
 - Add a settings page where users can update user data, change password, and add/remove users from family
 - Users should be able to delete shopping lists (Done)
+- Add password validation and increase password strength
