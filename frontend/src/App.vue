@@ -23,6 +23,11 @@ const goToArchived = () => {
   router.push("/archived");
 };
 
+const goToSettings = () => {
+  menuOpen.value = false;
+  router.push("/settings");
+};
+
 // Close menu when clicking outside
 const closeMenu = (e: Event) => {
   const target = e.target as HTMLElement;
@@ -86,6 +91,12 @@ onUnmounted(() => {
                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Archived Lists
+              </button>
+              <button
+                @click="goToSettings"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Settings
               </button>
               <button
                 @click="logout"
