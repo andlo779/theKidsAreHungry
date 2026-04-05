@@ -1,4 +1,12 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 
@@ -29,14 +37,20 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('joinList')
-  handleJoinList(@MessageBody() listId: string, @ConnectedSocket() client: Socket) {
+  handleJoinList(
+    @MessageBody() listId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
     if (client.data.user) {
       client.join(`list-${listId}`);
     }
   }
 
   @SubscribeMessage('leaveList')
-  handleLeaveList(@MessageBody() listId: string, @ConnectedSocket() client: Socket) {
+  handleLeaveList(
+    @MessageBody() listId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
     client.leave(`list-${listId}`);
   }
 

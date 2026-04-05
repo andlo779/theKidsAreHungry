@@ -21,8 +21,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         id: '00000000-0000-0000-0000-000000000000',
         name: 'Dummy User',
         email: 'dummy@test.com',
-        password_hash: 'dummyhash'
-      }
+        password_hash: 'dummyhash',
+      },
     });
   }
 }

@@ -14,7 +14,7 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    if (user && await bcrypt.compare(pass, user.password_hash)) {
+    if (user && (await bcrypt.compare(pass, user.password_hash))) {
       const { password_hash, ...result } = user;
       return result;
     }
@@ -22,27 +22,34 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id, family_id: user.family_id, name: user.name };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      family_id: user.family_id,
+      name: user.name,
+    };
     return {
       access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        family_id: user.family_id
-      }
+        family_id: user.family_id,
+      },
     };
   }
 
   async register(data: any) {
     const { name, email, password, familyName } = data;
-    
+
     // Hash password
     const salt = await bcrypt.genSalt();
     const password_hash = await bcrypt.hash(password, salt);
 
     // Find or create family
-    let family = await this.prisma.family.findUnique({ where: { name: familyName } });
+    let family = await this.prisma.family.findUnique({
+      where: { name: familyName },
+    });
     if (!family) {
       family = await this.prisma.family.create({ data: { name: familyName } });
     }

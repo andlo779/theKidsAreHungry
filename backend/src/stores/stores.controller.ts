@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -24,7 +33,10 @@ export class StoresController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStoreDto: Prisma.StoreUpdateInput) {
+  update(
+    @Param('id') id: string,
+    @Body() updateStoreDto: Prisma.StoreUpdateInput,
+  ) {
     return this.storesService.update(id, updateStoreDto);
   }
 

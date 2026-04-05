@@ -5,7 +5,10 @@ import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class ItemsService {
-  constructor(private prisma: PrismaService, private eventsGateway: EventsGateway) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   async create(data: Prisma.ShoppingItemUncheckedCreateInput) {
     const item = await this.prisma.shoppingItem.create({ data });

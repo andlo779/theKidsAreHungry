@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -9,7 +19,10 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  create(@Request() req: any, @Body() createItemDto: Prisma.ShoppingItemUncheckedCreateInput) {
+  create(
+    @Request() req: any,
+    @Body() createItemDto: Prisma.ShoppingItemUncheckedCreateInput,
+  ) {
     createItemDto.created_by_id = req.user.id;
     return this.itemsService.create(createItemDto);
   }
@@ -25,7 +38,10 @@ export class ItemsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateItemDto: Prisma.ShoppingItemUpdateInput) {
+  update(
+    @Param('id') id: string,
+    @Body() updateItemDto: Prisma.ShoppingItemUpdateInput,
+  ) {
     return this.itemsService.update(id, updateItemDto);
   }
 

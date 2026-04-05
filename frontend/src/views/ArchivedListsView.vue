@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '../stores/auth';
+import { ref, onMounted, onUnmounted } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
 const lists = ref<any[]>([]);
 const router = useRouter();
@@ -11,10 +11,10 @@ const activeMenu = ref<string | null>(null);
 
 const fetchArchivedLists = async () => {
   try {
-    const res = await axios.get('http://localhost:3000/lists/archived');
+    const res = await axios.get("http://localhost:3000/lists/archived");
     lists.value = res.data;
   } catch (error) {
-    console.error('Error fetching archived lists:', error);
+    console.error("Error fetching archived lists:", error);
   }
 };
 
@@ -25,20 +25,24 @@ const toggleMenu = (id: string) => {
 const unarchiveList = async (id: string) => {
   try {
     await axios.patch(`http://localhost:3000/lists/${id}/unarchive`);
-    lists.value = lists.value.filter(list => list.id !== id);
+    lists.value = lists.value.filter((list) => list.id !== id);
   } catch (error) {
-    console.error('Error unarchiving list:', error);
+    console.error("Error unarchiving list:", error);
   }
   activeMenu.value = null;
 };
 
 const deleteListPermanently = async (id: string) => {
-  if (confirm('Are you sure you want to permanently delete this list? This action cannot be undone.')) {
+  if (
+    confirm(
+      "Are you sure you want to permanently delete this list? This action cannot be undone.",
+    )
+  ) {
     try {
       await axios.delete(`http://localhost:3000/lists/${id}/permanent`);
-      lists.value = lists.value.filter(list => list.id !== id);
+      lists.value = lists.value.filter((list) => list.id !== id);
     } catch (error) {
-      console.error('Error permanently deleting list:', error);
+      console.error("Error permanently deleting list:", error);
     }
   }
   activeMenu.value = null;
@@ -51,11 +55,11 @@ const closeMenu = () => {
 onMounted(() => {
   authStore.loadUser();
   fetchArchivedLists();
-  document.addEventListener('click', closeMenu);
+  document.addEventListener("click", closeMenu);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('click', closeMenu);
+  document.removeEventListener("click", closeMenu);
 });
 </script>
 
@@ -66,7 +70,10 @@ onUnmounted(() => {
         <h2 class="text-2xl font-bold">Archived Lists</h2>
         <p class="text-gray-600">Manage your archived shopping lists.</p>
       </div>
-      <button @click="router.push('/')" class="text-indigo-600 hover:text-indigo-800 font-medium">
+      <button
+        @click="router.push('/')"
+        class="text-indigo-600 hover:text-indigo-800 font-medium"
+      >
         &larr; Back to Dashboard
       </button>
     </div>
@@ -76,9 +83,9 @@ onUnmounted(() => {
     </div>
 
     <div v-else class="grid gap-4 sm:grid-cols-2">
-      <div 
-        v-for="list in lists" 
-        :key="list.id" 
+      <div
+        v-for="list in lists"
+        :key="list.id"
         class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 relative"
       >
         <div class="flex justify-between items-start">
@@ -89,16 +96,30 @@ onUnmounted(() => {
             </p>
           </div>
           <div class="relative" @click.stop>
-            <button @click="toggleMenu(list.id)" class="text-gray-400 hover:text-gray-600 focus:outline-none p-1">
+            <button
+              @click="toggleMenu(list.id)"
+              class="text-gray-400 hover:text-gray-600 focus:outline-none p-1"
+            >
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                <path
+                  d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                />
               </svg>
             </button>
-            <div v-if="activeMenu === list.id" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-              <button @click="unarchiveList(list.id)" class="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 rounded-t-md">
+            <div
+              v-if="activeMenu === list.id"
+              class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+            >
+              <button
+                @click="unarchiveList(list.id)"
+                class="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 rounded-t-md"
+              >
                 Unarchive
               </button>
-              <button @click="deleteListPermanently(list.id)" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-b-md">
+              <button
+                @click="deleteListPermanently(list.id)"
+                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-b-md"
+              >
                 Delete Permanently
               </button>
             </div>
