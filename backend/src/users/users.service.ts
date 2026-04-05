@@ -40,6 +40,17 @@ export class UsersService {
     return this.prisma.user.update({ where: { id }, data: { password_hash } });
   }
 
+  async findFamilyMembers(familyId: string) {
+    return this.prisma.user.findMany({
+      where: { family_id: familyId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+  }
+
   remove(id: string) {
     return this.prisma.user.delete({ where: { id } });
   }

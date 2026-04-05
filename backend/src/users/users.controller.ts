@@ -28,6 +28,13 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me/family-members')
+  findFamilyMembers(@Request() req: AuthRequest) {
+    if (!req.user.family_id) return [];
+    return this.usersService.findFamilyMembers(req.user.family_id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
