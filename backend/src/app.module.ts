@@ -6,7 +6,6 @@ import { UsersModule } from './users/users.module';
 import { ListsModule } from './lists/lists.module';
 import { StoresModule } from './stores/stores.module';
 import { ItemsModule } from './items/items.module';
-import { EventsGateway } from './events/events.gateway';
 import { EventsModule } from './events/events.module';
 import { AuthModule } from './auth/auth.module';
 

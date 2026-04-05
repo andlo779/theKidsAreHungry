@@ -1,8 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
+import { AuthUser } from '../types';
+import { RegisterDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,16 +14,17 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass: string): Promise<AuthUser | null> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(pass, user.password_hash))) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password_hash, ...result } = user;
       return result;
     }
     return null;
   }
 
-  async login(user: any) {
+  login(user: AuthUser) {
     const payload = {
       email: user.email,
       sub: user.id,
@@ -39,7 +42,7 @@ export class AuthService {
     };
   }
 
-  async register(data: any) {
+  async register(data: RegisterDto) {
     const { name, email, password, familyName } = data;
 
     // Hash password

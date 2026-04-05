@@ -12,6 +12,7 @@ import {
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { AuthRequest } from '../types';
 
 @Controller('users')
 export class UsersController {
@@ -34,8 +35,15 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/password')
-  updatePassword(@Request() req: any, @Body() body: any) {
-    return this.usersService.updatePassword(req.user.id, body.oldPassword, body.newPassword);
+  updatePassword(
+    @Request() req: AuthRequest,
+    @Body() body: { oldPassword: string; newPassword: string },
+  ) {
+    return this.usersService.updatePassword(
+      req.user.id,
+      body.oldPassword,
+      body.newPassword,
+    );
   }
 
   @Patch(':id')

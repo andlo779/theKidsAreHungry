@@ -12,6 +12,7 @@ import {
 import { ListsService } from './lists.service';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { AuthRequest } from '../types';
 
 @UseGuards(JwtAuthGuard)
 @Controller('lists')
@@ -20,7 +21,7 @@ export class ListsController {
 
   @Post()
   create(
-    @Request() req: any,
+    @Request() req: AuthRequest,
     @Body() createListDto: Prisma.ShoppingListUncheckedCreateInput,
   ) {
     createListDto.created_by_id = req.user.id;
@@ -29,41 +30,48 @@ export class ListsController {
   }
 
   @Get()
-  findAll(@Request() req: any) {
+  findAll(@Request() req: AuthRequest) {
+    if (!req.user.family_id) return [];
     return this.listsService.findAll(req.user.family_id);
   }
 
   @Get('archived')
-  findArchived(@Request() req: any) {
+  findArchived(@Request() req: AuthRequest) {
+    if (!req.user.family_id) return [];
     return this.listsService.findArchived(req.user.family_id);
   }
 
   @Get(':id')
-  findOne(@Request() req: any, @Param('id') id: string) {
+  findOne(@Request() req: AuthRequest, @Param('id') id: string) {
+    if (!req.user.family_id) return null;
     return this.listsService.findOne(id, req.user.family_id);
   }
 
   @Patch(':id/unarchive')
-  unarchive(@Request() req: any, @Param('id') id: string) {
+  unarchive(@Request() req: AuthRequest, @Param('id') id: string) {
+    if (!req.user.family_id) throw new Error('No family');
     return this.listsService.unarchive(id, req.user.family_id);
   }
 
   @Patch(':id')
   update(
-    @Request() req: any,
+    @Request() req: AuthRequest,
     @Param('id') id: string,
     @Body() updateListDto: Prisma.ShoppingListUpdateInput,
   ) {
+    if (!req.user.family_id) throw new Error('No family');
     return this.listsService.update(id, req.user.family_id, updateListDto);
   }
 
   @Delete(':id/permanent')
-  removePermanent(@Request() req: any, @Param('id') id: string) {
+  removePermanent(@Request() req: AuthRequest, @Param('id') id: string) {
+    if (!req.user.family_id) throw new Error('No family');
     return this.listsService.removePermanent(id, req.user.family_id);
   }
 
   @Delete(':id')
-  remove(@Request() req: any, @Param('id') id: string) {
+  remove(@Request() req: AuthRequest, @Param('id') id: string) {
+    if (!req.user.family_id) throw new Error('No family');
     return this.listsService.remove(id, req.user.family_id);
   }
 }

@@ -9,6 +9,14 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
+import { AuthUser } from '../types';
+import { JwtPayload } from '../auth/jwt.strategy';
+
+interface AuthenticatedSocket extends Socket {
+  data: {
+    user?: AuthUser;
+  };
+}
 
 @WebSocketGateway({
   cors: {
@@ -17,48 +25,53 @@ import { JwtService } from '@nestjs/jwt';
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   constructor(private jwtService: JwtService) {}
 
-  async handleConnection(client: Socket) {
+  handleConnection(client: AuthenticatedSocket) {
     try {
-      const token = client.handshake.auth.token;
+      const token = client.handshake.auth.token as string;
       if (!token) throw new Error('No token');
-      const payload = this.jwtService.verify(token);
-      client.data.user = payload;
-    } catch (e) {
+      const payload = this.jwtService.verify<JwtPayload>(token);
+      client.data.user = {
+        id: payload.sub,
+        email: payload.email,
+        family_id: payload.family_id,
+        name: payload.name,
+      };
+    } catch {
       client.disconnect();
     }
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect() {
     // optional logic
   }
 
   @SubscribeMessage('joinList')
-  handleJoinList(
+  async handleJoinList(
     @MessageBody() listId: string,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthenticatedSocket,
   ) {
     if (client.data.user) {
-      client.join(`list-${listId}`);
+      await client.join(`list-${listId}`);
     }
   }
 
   @SubscribeMessage('leaveList')
-  handleLeaveList(
+  async handleLeaveList(
     @MessageBody() listId: string,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthenticatedSocket,
   ) {
-    client.leave(`list-${listId}`);
+    await client.leave(`list-${listId}`);
   }
 
-  broadcastItemCreated(listId: string, item: any) {
+  broadcastItemCreated(listId: string, item: unknown) {
     this.server.to(`list-${listId}`).emit('itemCreated', item);
   }
 
-  broadcastItemUpdated(listId: string, item: any) {
+  broadcastItemUpdated(listId: string, item: unknown) {
     this.server.to(`list-${listId}`).emit('itemUpdated', item);
   }
 

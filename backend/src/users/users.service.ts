@@ -30,13 +30,13 @@ export class UsersService {
   async updatePassword(id: string, oldPass: string, newPass: string) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new BadRequestException('User not found');
-    
+
     const isValid = await bcrypt.compare(oldPass, user.password_hash);
     if (!isValid) throw new BadRequestException('Incorrect old password');
-    
+
     const salt = await bcrypt.genSalt();
     const password_hash = await bcrypt.hash(newPass, salt);
-    
+
     return this.prisma.user.update({ where: { id }, data: { password_hash } });
   }
 

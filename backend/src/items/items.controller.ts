@@ -12,6 +12,7 @@ import {
 import { ItemsService } from './items.service';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { AuthRequest } from '../types';
 
 @UseGuards(JwtAuthGuard)
 @Controller('items')
@@ -20,7 +21,7 @@ export class ItemsController {
 
   @Post()
   create(
-    @Request() req: any,
+    @Request() req: AuthRequest,
     @Body() createItemDto: Prisma.ShoppingItemUncheckedCreateInput,
   ) {
     createItemDto.created_by_id = req.user.id;
