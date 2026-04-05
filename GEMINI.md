@@ -24,9 +24,13 @@ The project uses a locally hosted client-server architecture:
 ## Directory Structure
 
 - `frontend/`: Contains the Vue 3 application.
-  - `src/views/DashboardView.vue`: Displays all available lists and allows creating new ones.
+  - `src/views/DashboardView.vue`: Displays all active lists and allows creating new ones.
   - `src/views/ListDetailsView.vue`: The main shopping view for a specific list. Handles WebSocket connections for live updates.
+  - `src/views/LoginView.vue`: Handles user registration and login.
+  - `src/views/SettingsView.vue`: Allows users to update their password.
+  - `src/views/ArchivedListsView.vue`: Manages archived shopping lists.
 - `backend/`: Contains the Nest.js application.
+  - `src/auth/`: Handles JWT-based authentication and user registration.
   - `src/lists/`, `src/items/`, `src/stores/`, `src/users/`: REST API modules for CRUD operations.
   - `src/events/`: Contains the WebSocket Gateway (`EventsGateway`) that manages real-time socket connections and list "rooms".
   - `prisma/`: Contains the database schema (`schema.prisma`) and migrations.
@@ -65,8 +69,8 @@ The application UI will be available at `http://localhost:5173`.
 
 ## Development Notes
 
-- **Authentication:** Currently, a dummy user (`00000000-0000-0000-0000-000000000000`) is injected on backend startup to bypass full authentication flow while developing core features. All lists and items created via the UI are temporarily attached to this user.
-- **WebSockets:** The real-time functionality works by having the frontend emit a `joinList` event with the List ID when `ListDetailsView.vue` is mounted. The backend `EventsGateway` places that socket in a room for that specific list. Whenever an item is created, updated, or deleted via the REST API, the backend emits `itemCreated`, `itemUpdated`, or `itemDeleted` events to that specific room, triggering reactivity in the Vue frontend.
+- **Authentication:** Full JWT-based authentication is implemented. Users can register, log in, and manage their passwords. A dummy user (`00000000-0000-0000-0000-000000000000`) is still injected into the database via `PrismaService.onModuleInit` as a fallback, but the frontend requires standard user login.
+- **WebSockets:** The real-time functionality works by having the frontend emit a `joinList` event with the List ID when `ListDetailsView.vue` is mounted. The backend `EventsGateway` validates the user's JWT and places that socket in a room for that specific list. Whenever an item is created, updated, or deleted via the REST API, the backend emits `itemCreated`, `itemUpdated`, or `itemDeleted` events to that specific room, triggering reactivity in the Vue frontend.
 
 ## TODO
 
