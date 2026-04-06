@@ -2,6 +2,9 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../stores/auth";
+import BaseButton from "../components/BaseButton.vue";
+import BaseInput from "../components/BaseInput.vue";
+import BaseCard from "../components/BaseCard.vue";
 
 const oldPassword = ref("");
 const newPassword = ref("");
@@ -79,128 +82,114 @@ const updatePassword = async () => {
     isSubmitting.value = false;
   }
 };
-
-const selectAll = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  target.select();
-};
 </script>
 
 <template>
-  <div class="space-y-6 max-w-lg mx-auto">
-    <div>
-      <h2 class="text-2xl font-bold">Account Settings</h2>
-      <p class="text-gray-600">Manage your password and see your family.</p>
-    </div>
+  <div class="space-y-10 max-w-xl mx-auto">
+    <header class="space-y-1">
+      <h2 class="text-3xl font-black text-slate-900 tracking-tight">Account Settings</h2>
+      <p class="text-slate-500 font-medium">Manage your security and family members.</p>
+    </header>
 
-    <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
-      <h3 class="text-lg font-bold mb-4">My Family</h3>
-
-      <div v-if="isLoadingFamily" class="animate-pulse space-y-4">
-        <div class="h-10 bg-gray-100 rounded"></div>
-        <div class="h-10 bg-gray-100 rounded"></div>
-      </div>
-
-      <div
-        v-else-if="familyMembers.length === 0"
-        class="text-gray-500 text-sm italic"
-      >
-        No family members found.
-      </div>
-
-      <div v-else class="divide-y divide-gray-100">
-        <div
-          v-for="member in familyMembers"
-          :key="member.id"
-          class="py-3 flex items-center justify-between"
-        >
-          <div>
-            <div class="font-medium text-gray-900">
-              {{ member.name }}
-              <span
-                v-if="member.id === authStore.user?.id"
-                class="text-gray-400 font-normal text-sm ml-1"
-                >(You)</span
-              >
-            </div>
-            <div class="text-sm text-gray-500">{{ member.email }}</div>
+    <div class="space-y-6">
+      <section class="space-y-4">
+        <h3 class="text-xl font-black text-slate-900 px-1">My Family</h3>
+        <BaseCard class="divide-y divide-slate-100">
+          <div v-if="isLoadingFamily" class="p-6 space-y-4">
+            <div v-for="i in 2" :key="i" class="h-12 bg-slate-50 animate-pulse rounded-xl"></div>
           </div>
+
           <div
-            class="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full border border-indigo-100 uppercase tracking-wider"
+            v-else-if="familyMembers.length === 0"
+            class="p-12 text-center text-slate-400 font-bold italic"
           >
-            Family
+            No family members found.
           </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
-      <h3 class="text-lg font-bold mb-4">Change Password</h3>
-
-      <form @submit.prevent="updatePassword" class="space-y-4">
-        <div
-          v-if="errorMessage"
-          class="bg-red-50 text-red-600 p-3 rounded text-sm"
-        >
-          {{ errorMessage }}
-        </div>
-        <div
-          v-if="successMessage"
-          class="bg-green-50 text-green-600 p-3 rounded text-sm"
-        >
-          {{ successMessage }}
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Old Password</label
+          <div
+            v-else
+            v-for="member in familyMembers"
+            :key="member.id"
+            class="p-4 sm:p-6 flex items-center justify-between group hover:bg-slate-50 transition-colors first:rounded-t-3xl last:rounded-b-3xl"
           >
-          <input
-            v-model="oldPassword"
-            type="password"
-            required
-            @focus="selectAll"
-            @click="selectAll"
-            class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-black group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+                {{ member.name.charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <div class="font-bold text-slate-900">
+                  {{ member.name }}
+                  <span
+                    v-if="member.id === authStore.user?.id"
+                    class="text-emerald-600 text-xs font-black ml-1 uppercase"
+                    >(You)</span
+                  >
+                </div>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ member.email }}</div>
+              </div>
+            </div>
+            <div
+              class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-full border border-emerald-100 uppercase tracking-widest"
+            >
+              Family
+            </div>
+          </div>
+        </BaseCard>
+      </section>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >New Password</label
-          >
-          <input
-            v-model="newPassword"
-            type="password"
-            required
-            @focus="selectAll"
-            @click="selectAll"
-            class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </div>
+      <section class="space-y-4">
+        <h3 class="text-xl font-black text-slate-900 px-1">Security</h3>
+        <BaseCard class="p-6 sm:p-8">
+          <form @submit.prevent="updatePassword" class="space-y-6">
+            <div
+              v-if="errorMessage"
+              class="bg-rose-50 text-rose-600 p-4 rounded-xl text-sm font-bold border border-rose-100"
+            >
+              {{ errorMessage }}
+            </div>
+            <div
+              v-if="successMessage"
+              class="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-sm font-bold border border-emerald-100"
+            >
+              {{ successMessage }}
+            </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Confirm New Password</label
-          >
-          <input
-            v-model="confirmPassword"
-            type="password"
-            required
-            @focus="selectAll"
-            @click="selectAll"
-            class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </div>
+            <div class="space-y-4">
+              <BaseInput
+                v-model="oldPassword"
+                type="password"
+                label="Current Password"
+                placeholder="••••••••"
+                required
+              />
 
-        <button
-          type="submit"
-          :disabled="isSubmitting"
-          class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50 transition-colors font-medium"
-        >
-          {{ isSubmitting ? "Updating..." : "Update Password" }}
-        </button>
-      </form>
+              <BaseInput
+                v-model="newPassword"
+                type="password"
+                label="New Password"
+                placeholder="••••••••"
+                required
+              />
+
+              <BaseInput
+                v-model="confirmPassword"
+                type="password"
+                label="Confirm New Password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <BaseButton
+              type="submit"
+              :disabled="isSubmitting"
+              class="w-full h-12"
+            >
+              {{ isSubmitting ? "Updating..." : "Update Password" }}
+            </BaseButton>
+          </form>
+        </BaseCard>
+      </section>
     </div>
   </div>
 </template>
