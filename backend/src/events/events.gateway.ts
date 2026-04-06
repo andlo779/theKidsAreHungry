@@ -7,8 +7,10 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
+import { ShoppingItem } from '@prisma/client';
 import { AuthUser } from '../types';
 import { JwtPayload } from '../auth/jwt.strategy';
 
@@ -24,6 +26,8 @@ interface AuthenticatedSocket extends Socket {
   },
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private logger: Logger = new Logger('EventsGateway');
+
   @WebSocketServer()
   server!: Server;
 
@@ -45,8 +49,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  handleDisconnect() {
-    // optional logic
+  handleDisconnect(client: AuthenticatedSocket) {
+    this.logger.log(`client disconnected from socket: ${client.id}`);
   }
 
   @SubscribeMessage('joinList')
@@ -67,11 +71,11 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     await client.leave(`list-${listId}`);
   }
 
-  broadcastItemCreated(listId: string, item: unknown) {
+  broadcastItemCreated(listId: string, item: ShoppingItem) {
     this.server.to(`list-${listId}`).emit('itemCreated', item);
   }
 
-  broadcastItemUpdated(listId: string, item: unknown) {
+  broadcastItemUpdated(listId: string, item: ShoppingItem) {
     this.server.to(`list-${listId}`).emit('itemUpdated', item);
   }
 
